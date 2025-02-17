@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { createEmployee } from '../services/EmployeeService';
+import React, { useEffect, useState } from 'react'
+import { createEmployee, getEmployee, updateEmployee } from '../services/EmployeeService';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const EmployeeComponent = () => {
@@ -17,18 +17,44 @@ const EmployeeComponent = () => {
   });
 
   const navigator = useNavigate();
+  useEffect(() => {
+    if(id){
+      getEmployee(id).then((response) => {
+        setFirstName(response.data.firstName)
+        setLastName(response.data.lastName)
+        setEmail(response.data.email)
+      }).catch(error => {
+        console.error(error)
+      })
+    }
+  },[id])
 
-  function saveEmployee(e){
+  function saveOrUpdateEmployee(e){
     
     e.preventDefault();
     
     if(validateForm()){
+
       const employee = {firstName,lastName,email}
       console.log(employee)
+
+      if(id){
+        updateEmployee(id,employee).then((response) => {
+          console.log(response.data)
+          navigator('/employees')
+        }).catch(error => {
+          console.error(error)
+          navigator('/employees')
+        })
+      }else{
+      
       createEmployee(employee).then((response) => {
         console.log(response.data);
         navigator('/employees')
+      }).catch(error => {
+        console.error(error);
       })
+      }
     }
   }
 
@@ -103,7 +129,7 @@ const EmployeeComponent = () => {
                 {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
               </div>
               <div className='d-flex justify-content-center'>
-                <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
+                <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
               </div>
             </form>
           </div>
