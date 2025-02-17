@@ -1,20 +1,36 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react';
-import { getAllDepartments } from '../services/DepartmentService'
+import { deleteDepartmentById, getAllDepartments } from '../services/DepartmentService'
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const ListDepartmentComponent = () => {
 
     useEffect( () => {
+        listOfDepartments()
+    },[]);
+
+    function listOfDepartments() {
         getAllDepartments().then((response) => {
             console.log(response.data);
             setDepartments(response.data);
         }).catch(error => {
             console.error(error);
         })
-    },[]);
+    }
 
     const [departments, setDepartments] = useState([]);
+    const navigator = useNavigate();
+
+    const updateDepartment = (id) => navigator(`/edit-department/${id}`);
+
+    function removeDepartment (id) {
+        deleteDepartmentById(id).then((response) => {
+            console.log("Department deleted successfully!");
+            listOfDepartments()
+        }).catch(error => console.error(error));
+        
+    }
 
   return (
     <div className='container'>
@@ -26,6 +42,7 @@ const ListDepartmentComponent = () => {
                     <th>Department Id</th>
                     <th>Department Name</th>
                     <th>Department Description</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +52,14 @@ const ListDepartmentComponent = () => {
                             <td> {department.id}</td>
                             <td> {department.departmentName}</td>
                             <td> {department.departmentDescription}</td>
+                            <td>
+                                <button 
+                                    onClick={() => updateDepartment(department.id)}
+                                    className='btn btn-info m-2'>Update</button>
+                                <button 
+                                    onClick={() => removeDepartment(department.id)}
+                                    className='btn btn-danger m-2'>Delete</button>
+                            </td>
                         </tr>
                     )
                 }
