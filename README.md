@@ -107,5 +107,5 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 
 ---
-🚀 **Developed by Sivasankari G R** | 💻 [Your GitHub](https://github.com/sivasan2022)
+🚀 **Developed by Sivasankari G R** | 💻 [My GitHub](https://github.com/sivasan2022)
 
